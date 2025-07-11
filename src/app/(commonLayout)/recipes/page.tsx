@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Input, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
-import { PiCrownCross, PiCrownSimpleLight, PiUsersThreeLight } from 'react-icons/pi';
-import Image from 'next/image';
 import { CiSearch } from 'react-icons/ci';
 import { BsPlusLg } from 'react-icons/bs';
 import UserModal from '@/components/Ui/UserModal';
+
+
 
 interface DataType {
   key: React.Key;
@@ -99,6 +99,7 @@ const [isOpen, setOpen] = useState(false)
 
   return (
     <div className='mt-20 w-[90%] mx-auto'>
+    
       <div className='flex items-end justify-between'>
          <h1 className='text-xl font-semibold'>Recipe Management</h1>
        <div className='flex items-center gap-4 '>
@@ -113,6 +114,7 @@ const [isOpen, setOpen] = useState(false)
           dataSource={data}
         />
       </div>
+     
       <UserModal isOpen={isOpen} setOpen={setOpen}/>
     </div>
   );

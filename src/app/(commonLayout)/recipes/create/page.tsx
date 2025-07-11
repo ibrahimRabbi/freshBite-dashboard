@@ -4,6 +4,8 @@ import React from 'react';
 import ImageUpload from './_components/ImageUpload';
 import TextArea from 'antd/es/input/TextArea';
 import { FiPlus } from 'react-icons/fi';
+import TiptapEditor from './_components/RichText';
+
 
 const CreateRecipe = () => {
 
@@ -79,14 +81,12 @@ const CreateRecipe = () => {
 
                         {/* 2nd layer */}
                         <div className='w-1/2'>
-                            <Form.Item name='images' label='Instruction'>
-                                <TextArea rows={6} placeholder='type instruction...' />
-                                <Button style={{ backgroundColor: '#1C2D07', color: 'white', width: '140px', marginTop: '15px', borderRadius: '20px' }}><FiPlus />Add</Button>
+                            <Form.Item name='instruction' label='Instruction'>
+                               <TiptapEditor/>
                             </Form.Item>
 
-                             <Form.Item name='images' label='Instruction'>
-                                <TextArea rows={6} placeholder='type instruction...' />
-                                <Button style={{ backgroundColor: '#1C2D07', color: 'white', width: '140px', marginTop: '15px', borderRadius: '20px' }}><FiPlus />Add</Button>
+                             <Form.Item name='skills' label='skills'>
+                               <TiptapEditor/>
                             </Form.Item>
                             <hr />
                             <div className='mt-10'>
@@ -125,7 +125,7 @@ const CreateRecipe = () => {
                                         gluten, Celery, Crustaceans, Eggs, Fish, Peanuts, Soy, Milk (incl. Lactose), Tree Nuts, Mustard, Sesame, Sulphites, Lupins, Molluscs</p>
                                 </Form.Item>
 
-                                <Form.Item name='allergens' label='Tags (Maximum 20)'>
+                                <Form.Item name='tags' label='Tags (Maximum 20)'>
                                     <Input style={{ width: '350px', padding: '8px' }} />
                                     <p className='text-gray-400 text-[16px]'>Suggested: Breakfast, Eggs, 5min recipes, easy_recipes,</p>
                                 </Form.Item>
@@ -134,6 +134,7 @@ const CreateRecipe = () => {
                         </div>
                     </div>
                     <hr />
+                   
                    <div className='flex items-end justify-end'>
                      <Button style={{ marginTop: '20px', backgroundColor: '#1C2D07', color: 'white', width: '350px', padding: '20px' }} type='default'>Publish</Button>
                    </div>
