@@ -54,10 +54,13 @@ const Login = () => {
 
     return (
         <section className="bg-[#f0f0f0] pt-20 h-screen">
-            <div className="shadow-xl w-[70%] mx-auto bg-white p-12 flex items-center justify-start">
-                <Image src={plateImage} alt="Signin" className="w-1/2" />
+            <div className="shadow-xl w-[70%] mx-auto bg-white flex items-center justify-start relative">
 
-                <div className="w-1/2">
+                <Image src={plateImage} alt="Signin" className="w-[50%]" />
+
+
+
+                <div className="w-1/2 absolute right-20">
                     <div>
                         <h1 className="mt-4 md:mt-7 text-left text-[#222222] text-[25px] font-bold md:text-2xl">
                             Hello, Welcome!
