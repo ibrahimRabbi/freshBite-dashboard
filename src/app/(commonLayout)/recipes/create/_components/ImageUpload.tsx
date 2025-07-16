@@ -35,22 +35,22 @@ const ImageUpload = () => {
 
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
-           <LuFileImage className='size-7 ml-7' />
-            <div style={{ marginTop: 8 }}>upload image</div>
+           <LuFileImage className='size-7 ml-7 text-zinc-600' />
+            <div className='text-zinc-600' style={{ marginTop: 8 }}>upload Cover</div>
         </button>
     );
 
      const videoUploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
-           <LuFileVideo className='size-7 ml-7'/>
-            <div style={{ marginTop: 8 }}>upload video</div>
+           <LuFileVideo className='size-7 ml-7 text-zinc-600'/>
+            <div className='text-zinc-600' style={{ marginTop: 8 }}>upload Images</div>
         </button>
     );
 
 
 
     return (
-        <div>
+        <div className='border-2 border-dashed p-6 border-zinc-300 rounded-md'>
             <div className='flex items-center gap-5'>
                 <Upload
                 listType="picture-card"

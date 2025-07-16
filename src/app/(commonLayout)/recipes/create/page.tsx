@@ -5,6 +5,8 @@ import ImageUpload from './_components/ImageUpload';
 import TextArea from 'antd/es/input/TextArea';
 import { FiPlus } from 'react-icons/fi';
 import TiptapEditor from './_components/RichText';
+import { FaSearch } from 'react-icons/fa';
+import Link from 'next/link';
 
 
 const CreateRecipe = () => {
@@ -48,7 +50,7 @@ const CreateRecipe = () => {
                             <hr />
                             <div className='mt-5'>
                                 <Form.Item name='cockingMode' label='cocking mode'>
-                                    <Select style={{ width: '100%'}}>
+                                    <Select style={{ width: '100%' }}>
                                         <Select.Option value="sample">Sample</Select.Option>
                                     </Select>
                                 </Form.Item>
@@ -81,12 +83,17 @@ const CreateRecipe = () => {
 
                         {/* 2nd layer */}
                         <div className='w-1/2'>
-                            <Form.Item name='instruction' label='Instruction'>
-                               <TiptapEditor/>
+                            {/* <Form.Item name='skills' label='skills'>
+                                <TiptapEditor />
+                            </Form.Item> */}
+                            <Form.Item name='skills' label='skills'>
+                                <Input suffix={<FaSearch className='text-zinc-500' />} style={{ padding: '8px' }} placeholder='search skill by Name...' />
+                                <div>
+                                    <Button href='/recipes/kitchen-skill' style={{ backgroundColor: '#1C2D07', color: 'white', width: '170px', marginTop: '15px', borderRadius: '20px' }}><FiPlus /> Create new Skill</Button>
+                                </div>
                             </Form.Item>
-
-                             <Form.Item name='skills' label='skills'>
-                               <TiptapEditor/>
+                            <Form.Item name='instruction' label='Instruction'>
+                                <TiptapEditor />
                             </Form.Item>
                             <hr />
                             <div className='mt-10'>
@@ -134,10 +141,10 @@ const CreateRecipe = () => {
                         </div>
                     </div>
                     <hr />
-                   
-                   <div className='flex items-end justify-end'>
-                     <Button style={{ marginTop: '20px', backgroundColor: '#1C2D07', color: 'white', width: '350px', padding: '20px' }} type='default'>Publish</Button>
-                   </div>
+
+                    <div className='flex items-end justify-end'>
+                        <Button style={{ marginTop: '20px', backgroundColor: '#1C2D07', color: 'white', width: '350px', padding: '20px' }} type='default'>Publish</Button>
+                    </div>
                 </Form>
 
             </div>

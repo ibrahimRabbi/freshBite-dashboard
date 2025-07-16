@@ -9,7 +9,7 @@ const layout = ({ children}: { children: ReactNode}) => {
                 <header className="w-full"><Navber/></header>
                 <main className="w-full p-12">{children}</main>
             </div>
-            <aside className="w-[14%]"><SideBar/></aside>
+            <aside><SideBar/></aside>
         </section>
     );
 };

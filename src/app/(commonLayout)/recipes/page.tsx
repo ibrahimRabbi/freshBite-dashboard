@@ -112,6 +112,7 @@ const [isOpen, setOpen] = useState(false)
           rowSelection={{ ...rowSelection }}
           columns={columns}
           dataSource={data}
+          pagination={false}
         />
       </div>
      

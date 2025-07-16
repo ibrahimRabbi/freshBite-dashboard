@@ -89,11 +89,23 @@ const UserTable: React.FC = () => {
     },
   },
   {
+    title: 'Recipe',
+    dataIndex: 'recipe',
+    render: (text: string) => {
+      return (
+        <div className='flex items-center gap-4'>
+          <Image width={40} height={40} className='rounded-full ring-1' src='https://i.ibb.co/0yLtgsdp/amirali-mirhashemian-sc5s-TPMr-Vfk-unsplash.jpg' alt='profile' />
+          <p>fride rice recipe for lunch</p>
+        </div>
+      )
+    },
+  },
+  {
     title: 'Reviews',
     dataIndex: 'review',
     render: (_,record)=>{
       return(
-        <p>{record?.review.slice(0,100)}....</p>
+        <p>{record?.review.slice(0,70)}....</p>
       )
     }
   },
@@ -116,6 +128,7 @@ const UserTable: React.FC = () => {
           rowSelection={{ ...rowSelection }}
           columns={columns}
           dataSource={data}
+          pagination={false}
         />
       </div>
       <ReviewModal isOpen={isOpen} setOpen={setOpen} />

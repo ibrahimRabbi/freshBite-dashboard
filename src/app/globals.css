@@ -1,5 +1,7 @@
 @layer theme, base, antd, components, utilities;
 @import 'tailwindcss';
+@plugin "daisyui";
+
 
 :root {
   --background: #ffffff;
