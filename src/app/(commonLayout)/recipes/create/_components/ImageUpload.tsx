@@ -1,91 +1,109 @@
 'use client'
-import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
-import type { GetProp, UploadFile, UploadProps } from 'antd';
-import { LuFileImage, LuFileVideo } from 'react-icons/lu';
+import { useVideoUploadMutation } from '@/redux/features/recipe/recipeApi'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+import { LuFileImage, LuFileVideo } from 'react-icons/lu'
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+const ImageUpload = ({ setVideoLink, setImageFile }: { setVideoLink: any, setImageFile: any }) => {
+    const [imagePreview, setImagePreview] = useState<string | null>(null)
+    const [videoPreview, setVideoPreview] = useState<string | null>(null)
+    const [uploadVideo, { isLoading }] = useVideoUploadMutation()
 
-const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
 
-const ImageUpload = () => {
-
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setImagePreview(URL.createObjectURL(file))
+            setImageFile(file)
         }
+    }
 
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-    };
+    const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setVideoPreview(URL.createObjectURL(file))
+            const formData = new FormData()
+            formData.append('skillVideos', file)
+            try {
+                const uploading = await uploadVideo(formData).unwrap()
+                if (uploading.status === 200) {
+                    setVideoLink(uploading?.url)
+                }
+            } catch (err: any) {
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-
-    const uploadButton = (
-        <button style={{ border: 0, background: 'none' }} type="button">
-           <LuFileImage className='size-7 ml-7 text-zinc-600' />
-            <div className='text-zinc-600' style={{ marginTop: 8 }}>upload Cover</div>
-        </button>
-    );
-
-     const videoUploadButton = (
-        <button style={{ border: 0, background: 'none' }} type="button">
-           <LuFileVideo className='size-7 ml-7 text-zinc-600'/>
-            <div className='text-zinc-600' style={{ marginTop: 8 }}>upload Images</div>
-        </button>
-    );
-
-
+                toast.error(err?.data?.message)
+            }
+        }
+    }
 
     return (
-        <div className='border-2 border-dashed p-6 border-zinc-300 rounded-md'>
-            <div className='flex items-center gap-5'>
-                <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-            >
-                {fileList.length >= 8 ? null : uploadButton}
-            </Upload>
-            <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-            >
-                {fileList.length >= 8 ? null : videoUploadButton}
-            </Upload>
+        <div className="border-2 border-dashed p-6 border-zinc-300 rounded-md">
+            <div className="flex items-center gap-5">
+
+                {/* IMAGE */}
+                <label
+                    htmlFor="cover"
+                    className="relative cursor-pointer bg-white border border-dashed border-gray-300 rounded-xl w-40 h-40 overflow-hidden"
+                >
+                    {imagePreview ? (
+                        <img
+                            src={imagePreview}
+                            alt="preview"
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center w-full h-full">
+                            <LuFileImage className="size-7 text-zinc-600" />
+                            <div className="text-zinc-600 text-sm mt-2">add cover</div>
+                        </div>
+                    )}
+
+                    <input
+                        type="file"
+                        id="cover"
+                        hidden
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                </label>
+
+                {/* VIDEO */}
+                <label
+                    htmlFor="video"
+                    className="relative cursor-pointer bg-white border border-dashed border-gray-300 rounded-xl w-40 h-40 overflow-hidden"
+                >
+                    {videoPreview ? (
+                        <video
+                            src={videoPreview}
+                            controls
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center w-full h-full">
+                            <LuFileVideo className="size-7 text-zinc-600" />
+                            <div className="text-zinc-600 text-sm mt-2">upload video</div>
+                        </div>
+                    )}
+
+                    <input
+                        type="file"
+                        id="video"
+                        hidden
+                        accept="video/*"
+                        onChange={handleVideoChange}
+                    />
+
+                    {/* Loading Overlay */}
+                    {isLoading && (
+                        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-10">
+                            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <span className="text-white font-semibold">Video uploading...</span>
+                        </div>
+                    )}
+                </label>
             </div>
-            {previewImage && (
-                <Image
-                    wrapperStyle={{ display: 'none' }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                    }}
-                    src={previewImage}
-                />
-            )}
         </div>
-    );
-};
+    )
+}
 
-export default ImageUpload;
-
-
-
-
+export default ImageUpload

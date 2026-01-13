@@ -1,12 +1,14 @@
 'use client'
-import { Button, Switch, Table, TableColumnsType } from 'antd';
-import React from 'react';
+import { Button, Pagination, Switch, Table, TableColumnsType } from 'antd';
+import React, { useState } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { SlRefresh } from 'react-icons/sl';
 
 const page = () => {
    const currentDate = new Date().getFullYear()
+   const [currentPage,setCurrentPage] = useState(1)
+
    interface DataType {
       key: React.Key;
       RecipeName: string;
@@ -115,7 +117,12 @@ const page = () => {
             <Table<DataType>
                columns={columns}
                dataSource={data}
+               pagination={false}
+               tableLayout='fixed'
             />
+           <div className='flex justify-center mt-16'>
+             <Pagination current={currentPage} onChange={(page)=>setCurrentPage(page)} total={50} />
+           </div>
          </div>
 
       </section>

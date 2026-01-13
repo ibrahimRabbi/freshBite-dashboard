@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Wrapper from "@/utils/Wrapper";
+import { Toaster } from "react-hot-toast";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -13,7 +14,7 @@ import "./globals.css";
 // });
 
 export const metadata: Metadata = {
-  title: "Fresh bite",
+  title: "Fresh bite server",
   description: "build by ibrahim rabbi",
 };
 
@@ -23,11 +24,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body >
+   <Wrapper>
+     <html lang="en">
+      
+        <body >
       {children}
       </body>
+      
     </html>
+    <Toaster/>
+   </Wrapper>
   );
 }
 

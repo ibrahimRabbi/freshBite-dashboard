@@ -65,7 +65,7 @@ const UserEngeggement = () => {
     <div className="bg-white rounded-xl p-5 shadow-md w-full">
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-4 items-center">
-          <p className="font-semibold text-lg">User Retention</p>
+          <p className="font-semibold text-lg text-black">User Retention</p>
           <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
               <span className="w-3 h-3 rounded-full bg-zinc-950"></span>

@@ -1,139 +1,110 @@
 'use client'
 import React, { useState } from 'react';
-import { Button, Input, Table } from 'antd';
+import { Button, Input, Pagination, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import Image from 'next/image';
 import { CiSearch } from 'react-icons/ci';
 import ReviewModal from '@/components/Ui/ReviewModal';
+import { useGetAllRecipeReviewsQuery, useGetSingleReviewsQuery } from '@/redux/features/recipe/recipeApi';
 
 interface DataType {
   key: React.Key;
+  _id: string;
   id: string,
   name: string;
-  review: string
+  review: string;
+  recipeId: {
+    images: string[];
+    title: string;
+  };
+  comment: string;
+  userId: {
+    profileImage: string;
+    fullName: string;
+  };
 }
 
 
 
-const data: DataType[] = [
-  {
-    key: '1',
-    id: 'GHQWEZFU',
-    name: 'John Brown',
-    review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis ipsam dolore rem aperiam voluptas, voluptatibus cupiditate eligendi assumenda tempora quisquam.'
-  },
-  {
-    key: '2',
-    id: 'GHQWEZFU',
-    name: 'Jim Green',
-     review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis ipsam dolore rem aperiam voluptas, voluptatibus cupiditate eligendi assumenda tempora quisquam.'
-  },
+const ReviewTable: React.FC = () => {
 
-  {
-    key: '3',
-    id: 'GHQWEZFU',
-    name: 'John Brown',
-     review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis ipsam dolore rem aperiam voluptas, voluptatibus cupiditate eligendi assumenda tempora quisquam.'
-  },
-  {
-    key: '4',
-    id: 'GHQWEZFU',
-    name: 'John Brown',
-    review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis ipsam dolore rem aperiam voluptas, voluptatibus cupiditate eligendi assumenda tempora quisquam.'
-  },
-  {
-    key: '5',
-    id: 'GHQWEZFU',
-    name: 'John Brown',
-    review: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis ipsam dolore rem aperiam voluptas, voluptatibus cupiditate eligendi assumenda tempora quisquam.'
-  },
-
-];
-
-// rowSelection object indicates the need for row selection
-const rowSelection: TableProps<DataType>['rowSelection'] = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: (record: DataType) => ({
-    disabled: record.name === 'Disabled User',
-    name: record.name,
-  }),
-};
+const [isOpen, setOpen] = useState(false)
+const [currentPage, setCurrentPage] = useState(1)
+const limit = 10
+const [search, setSearch] = useState('');
+const { data } = useGetAllRecipeReviewsQuery({ page: currentPage, limit,search })
+const [singleData, setSingleData] = useState<DataType | null>(null)
 
 
 
-
-
-const UserTable: React.FC = () => {
-
-  const [isOpen, setOpen] = useState(false)
-
+  const actionHandler = (data:any) => {
+    setOpen(true)
+    setSingleData(data)
+  }
 
   const columns: TableColumnsType<DataType> = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    render: (text: string) => <p >{text}</p>,
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text: string) => {
-      return (
-        <div className='flex items-center gap-4'>
-          <Image width={40} height={40} className='rounded-full ring-1' src='https://i.ibb.co/z5QXvMS/2148859448.jpg' alt='profile' />
-          <p>{text}</p>
-        </div>
-      )
+    {
+      title: 'Name',
+      dataIndex: 'userId',
+      render: (_, record) => {
+        return (
+          <div className='flex items-center gap-4'>
+            <Image width={40} height={40} className='rounded-full ring-1 w-10 h-10 object-cover' src={record?.userId?.profileImage} alt='profile' />
+            <p>{record?.userId?.fullName}</p>
+          </div>
+        )
+      },
     },
-  },
-  {
-    title: 'Recipe',
-    dataIndex: 'recipe',
-    render: (text: string) => {
-      return (
-        <div className='flex items-center gap-4'>
-          <Image width={40} height={40} className='rounded-full ring-1' src='https://i.ibb.co/0yLtgsdp/amirali-mirhashemian-sc5s-TPMr-Vfk-unsplash.jpg' alt='profile' />
-          <p>fride rice recipe for lunch</p>
-        </div>
-      )
+    {
+      title: 'Recipe',
+      dataIndex: 'recipeId',
+      render: (_, record) => {
+        return (
+          <div className='flex items-center gap-4'>
+            <Image width={40} height={40} className='rounded-full ring-1 w-10 h-10 object-cover' src={record?.recipeId?.images[0]} alt='profile' />
+            <p>{record?.recipeId?.title}</p>
+          </div>
+        )
+      },
     },
-  },
-  {
-    title: 'Reviews',
-    dataIndex: 'review',
-    render: (_,record)=>{
-      return(
-        <p>{record?.review.slice(0,70)}....</p>
-      )
+    {
+      title: 'Reviews',
+      dataIndex: 'comment',
+      render: (_, record) => {
+        return (
+          <p>{record?.comment?.slice(0, 70)}....</p>
+        )
+      }
+    },
+    {
+      title: 'Action',
+      render: (_, record) => {
+        return <Button onClick={() => actionHandler(record)}>Read More</Button>
+      }
     }
-  },
-  {
-    title: 'Action',
-    dataIndex:'read more',
-    render : ()=>{
-      return <Button onClick={()=>setOpen(true)}>Read More</Button>
-    }
-  }
-];
+  ];
 
   return (
     <div className='mt-20 w-[90%] mx-auto'>
       <div className='flex items-end justify-end gap-4 '>
-        <Input suffix={<CiSearch className='size-5 text-gray-500' />} placeholder='search...' style={{ height: '40px', width: '280px' }} />
+        <Input onPressEnter={(e) => setSearch((e.target as HTMLInputElement)?.value)} suffix={<CiSearch className='size-5 text-gray-500' />} placeholder='search...' style={{ height: '40px', width: '280px' }} />
       </div>
       <div className='mt-5'>
         <Table<DataType>
-          rowSelection={{ ...rowSelection }}
           columns={columns}
-          dataSource={data}
+          dataSource={data?.data?.map((review: any) => ({
+            ...review,
+            key: review._id || review.id,
+          }))}
           pagination={false}
         />
+        <div className='flex justify-center mt-12 '>
+          <Pagination current={currentPage} onChange={(page) => setCurrentPage(page)} pageSize={limit} total={data?.meta?.totalDocument} />
+        </div>
       </div>
-      <ReviewModal isOpen={isOpen} setOpen={setOpen} />
+      <ReviewModal data={singleData} isOpen={isOpen} setOpen={setOpen} />
     </div>
   );
 };
 
-export default UserTable;
+export default ReviewTable;

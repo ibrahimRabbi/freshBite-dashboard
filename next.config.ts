@@ -1,16 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-reactStrictMode: true,
- images: {
+  reactStrictMode: true,
+  images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'ibb.co',
       },
-       {
+      {
         protocol: 'https',
         hostname: 'i.ibb.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },

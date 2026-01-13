@@ -62,9 +62,9 @@ const SideBar = () => {
                             </summary>
                             <ul className='space-y-4 mt-4'>
                                 <li onClick={() => userHandler('/users')} className={`w-full cursor-pointer p-2 rounded-sm
-                                     ${currentPath === '/users' ? 'bg-[#39580f] text-white' : 'text-[#474747] font-medium pl-6'}`}>Users</li>
+                                     ${currentPath === '/users' ? 'bg-[#979E8D]' : 'text-[#474747] font-medium pl-6'}`}>Users</li>
                                 <li onClick={() => userHandler('/users/reviews')} className={`w-full cursor-pointer p-2 rounded-sm
-                                     ${currentPath === '/users/reviews' ? 'bg-[#39580f] text-white' : 'text-[#474747] font-medium pl-6'}`}>Reviews</li>
+                                     ${currentPath === '/users/reviews' ? 'bg-[#979E8D]' : 'text-[#474747] font-medium pl-6'}`}>Reviews</li>
                             </ul>
                         </details>
                     </li>
@@ -82,13 +82,13 @@ const SideBar = () => {
                             </summary>
                             <ul className='space-y-4 mt-4'>
                                 <li onClick={() => recipeHandler('/recipes')} className={`w-full cursor-pointer p-2 rounded-sm
-                                     ${currentPath === '/recipes' ? 'bg-[#39580f] text-white' : 'text-[#474747] font-medium pl-6'}`}>Recipes</li>
+                                     ${currentPath === '/recipes' ? 'bg-[#979E8D]' : 'text-[#474747] font-medium pl-6'}`}>Recipes</li>
 
                                 <li onClick={() => recipeHandler('/recipes/create')} className={`w-full cursor-pointer p-2 rounded-sm
-                                     ${currentPath === '/recipes/create' ? 'bg-[#39580f] text-white' : 'text-[#474747] font-medium pl-6'}`}>create recipe</li>
+                                     ${currentPath === '/recipes/create' ? 'bg-[#979E8D]' : 'text-[#474747] font-medium pl-6'}`}>create recipe</li>
 
                                 <li onClick={() => recipeHandler('/recipes/kitchen-skill')} className={`w-full cursor-pointer p-2 rounded-sm
-                                     ${currentPath === '/recipes/kitchen-skill' ? 'bg-[#39580f] text-white' : 'text-[#474747] font-medium pl-6'}`}>kitchen skill</li>
+                                     ${currentPath === '/recipes/kitchen-skill' ? 'bg-[#979E8D]' : 'text-[#474747] font-medium pl-6'}`}>kitchen skill</li>
                             </ul>
                         </details>
                     </li>
