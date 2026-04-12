@@ -1,32 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
-import JoditEditor from "jodit-react";
 import { Button, Form } from "antd";
 import toast from "react-hot-toast";
 import { useGetSettingDataQuery, useUpdateSettingMutation } from "@/redux/features/settings/settingApi";
 import { ArrowLeft } from "lucide-react";
 
-const EditPages = () => {
+// Dynamically import JoditEditor with SSR disabled
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
+
+// Component that uses useSearchParams
+const EditPagesContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const query = searchParams.get("query") || "";
-     console.log("Query Param:", query);
 
- 
     const [content, setContent] = useState<string>("");
 
-     const { data } = useGetSettingDataQuery(query);
+    const { data } = useGetSettingDataQuery(query);
     const [updateSetting, { isLoading }] = useUpdateSettingMutation();
 
-    
     useEffect(() => {
         setContent(data?.data?.value);
     }, [data?.data?.value]);
 
-    
     useEffect(() => {
         if (query) {
             const formattedTitle =
@@ -38,11 +38,8 @@ const EditPages = () => {
         }
     }, [query]);
 
-    
-
     const handlePost = async () => {
         try {
-
             const updating = await updateSetting({ value: content, queryField: query }).unwrap();
             console.log("Updating:", updating);
 
@@ -60,8 +57,8 @@ const EditPages = () => {
         <div className="mt-16 ml-8 w-[95%]">
             {/* Back Button */}
             <div className="flex items-center mb-6 -ml-4">
-                <button 
-                    onClick={() => router.back()} 
+                <button
+                    onClick={() => router.back()}
                     className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
                 >
                     <ArrowLeft className="w-5 h-5" />
@@ -101,6 +98,14 @@ const EditPages = () => {
                 </div>
             </Form>
         </div>
+    );
+};
+
+const EditPages = () => {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <EditPagesContent />
+        </Suspense>
     );
 };
 

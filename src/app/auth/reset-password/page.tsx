@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Form, Input, Button, notification } from 'antd';
 import {
   EyeInvisibleOutlined,
@@ -18,10 +18,11 @@ import { toast } from 'react-hot-toast';
 
 
 
-const ResetUpdatePassword = () => {
+const ResetUpdatePasswordContent = () => {
   const [form] = Form.useForm();
   const [resetPasswordApi, { isLoading }] = useResetPasswordMutation();
-  const userId = useSearchParams().get('userId');
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
   const router = useRouter();
 
 
@@ -143,6 +144,14 @@ const ResetUpdatePassword = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+const ResetUpdatePassword = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetUpdatePasswordContent />
+    </Suspense>
   );
 };
 

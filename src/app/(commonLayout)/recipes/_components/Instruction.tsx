@@ -88,9 +88,9 @@ const InstructionSteps = ({
 
 // Remove step
 const removeStep = (index: number) => {
-  setSteps((prev: Step[]) => prev.filter((_, i) => i !== index));
-  setPreviews((prev: (File | null)[]) => prev.filter((_, i) => i !== index));
-  setUploading((prev: boolean[]) => prev.filter((_, i) => i !== index));
+  setSteps(steps.filter((_, i) => i !== index));
+  setPreviews(previews.filter((_, i) => i !== index));
+  setUploading(uploading.filter((_, i) => i !== index));
 };
 
   return (
