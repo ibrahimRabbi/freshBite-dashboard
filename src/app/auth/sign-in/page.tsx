@@ -21,8 +21,13 @@ const Login = () => {
       const res = await signIn(values).unwrap();
       if (res?.status === 200) {
         toast.success(res?.message);
-        setCookie("token", res?.token);
-         
+        setCookie("token", res?.token, {
+          maxAge: 60 * 60 * 24,
+          path: "/",
+          secure: true,
+          sameSite: "lax",  
+        });
+
         router.push("/");
       }
     } catch (err: any) {
@@ -105,7 +110,7 @@ const Login = () => {
                 <Form.Item
                   name="remember"
                   valuePropName="checked"
-                  
+
                 >
                   <Checkbox className="text-black">
                     Remember me

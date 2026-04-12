@@ -14,8 +14,11 @@ import { Toaster } from "react-hot-toast";
 // });
 
 export const metadata: Metadata = {
-  title: "Fresh bite server",
+  title: "Fresh bite - Admin Dashboard",
   description: "build by ibrahim rabbi",
+  icons : {
+    icon: "/favicon.svg",
+  }
 };
 
 export default function RootLayout({
