@@ -1,154 +1,325 @@
-'use client'
-import { Button, Form, Input, Select, Upload } from 'antd';
-import React from 'react';
-import ImageUpload from './_components/ImageUpload';
-import TextArea from 'antd/es/input/TextArea';
-import { FiPlus } from 'react-icons/fi';
-import TiptapEditor from './_components/RichText';
-import { FaSearch } from 'react-icons/fa';
-import Link from 'next/link';
+'use client';
 
+import { Button, Form, Input, Select } from 'antd';
+import React, { useState } from 'react';
+import TextArea from 'antd/es/input/TextArea';
+import ImageUpload from '../_components/ImgeUpload';
+import { useCreateRecipeMutation, useMultipleUploadMutation } from '@/redux/features/recipe/recipeApi';
+import IngredientField from '../_components/IngrediantFiled';
+import NutritionField from '../_components/NutrationField';
+import InstructionSteps from '../_components/Instruction';
+import SkillComponent from '../_components/SkillComponent';
+import toast from 'react-hot-toast';
+
+interface Step {
+    title: string;
+    fileUrl: string | null;
+}
+
+interface Trecipe {
+    title: string;
+    description: string;
+    images: string[];
+    allergens: string[];
+    coocking_mode: 'everyday' | 'emergency' | 'meal prep';
+    tags: string[];
+    serving: number;
+    ingredients: [];
+    nutritionValue: [];
+    instruction: [];
+    required_skill: [];
+    time: {};
+}
 
 const CreateRecipe = () => {
 
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
+
+    const [image1File, setImage1File] = useState<string | File>('');
+    const [image2File, setImage2File] = useState<string | File>('');
+    const [image3File, setImage3File] = useState<string | File>('');
+    const [image4File, setImage4File] = useState<string | File>('');
+    const [skills, setSkill] = useState<string[]>([]);
+    const [multipleUpload] = useMultipleUploadMutation();
+    const [createRecipe] = useCreateRecipeMutation();
+
+    const [ingredients, setIngredients] = useState([{ id: 1, name: '', categories: '', value: '', unit: '', householdValue: '', houseHoldUnit: ''}]);
+    const [nutritions, setNutritions] = useState([{ id: 1, name: '', value: '', unit: '' }]);
+    const [steps, setSteps] = useState<Step[]>([{ title: '', fileUrl: null }]);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [form] = Form.useForm();
+
+    const validateBeforeSubmit = () => {
+
+        const hasAtLeastOneImage = image1File || image2File || image3File || image4File;
+
+        if (!hasAtLeastOneImage) {
+            toast.error('Please upload at least one recipe image');
+            return false;
+        }
+
+        if (!skills.length) {
+            toast.error('Please add at least one skill');
+            return false;
+        }
+
+        if (!ingredients.length || ingredients.some(i => !i.name)) {
+            toast.error('Please add at least one ingredient');
+            return false;
+        }
+
+        if (!nutritions.length || nutritions.some(n => !n.name)) {
+            toast.error('Please add nutrition values');
+            return false;
+        }
+
+        if (!steps.length || steps.some(s => !s.title.trim())) {
+            toast.error('Please complete all instruction steps');
+            return false;
+        }
+
+        return true;
     };
+
+    const onFinish = async (values: any) => {
+        if (!validateBeforeSubmit()) return;
+
+        setIsSubmitting(true);
+
+        try {
+            const imageFiles = [image1File, image2File, image3File, image4File];
+            const formData = new FormData();
+
+            imageFiles.forEach((file) => {
+                if (file) formData.append('images', file);
+            });
+
+            const uploading = await multipleUpload(formData).unwrap();
+
+            if (uploading.status !== 200) {
+                throw new Error('Failed to upload images');
+            }
+
+            const data: Trecipe = {
+                ...values,
+                images: uploading.url,
+                ingredients,
+                nutritionValue: nutritions,
+                instruction: steps,
+                required_skill: skills,
+            };
+
+            const creatingRecipe = await createRecipe(data).unwrap();
+
+            if (creatingRecipe?.status === 201) {
+                toast.success(creatingRecipe.message);
+                window.location.reload();
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || 'Something went wrong');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
-
     return (
-        <section className='mt-16 '>
-            <h1 className='text-xl font-semibold'>Add Recipes</h1>
-            <div className='bg-[#faf9f6] py-10 px-20 mt-4 rounded-sm'>
+        <section className='mt-20'>
+            <h1 className='text-xl font-medium text-gray-700'>Add Recipes</h1>
+
+            <div className='bg-[#faf9f6] py-10 px-10 mt-4 rounded-sm'>
                 <Form
-                    name="basic"
+                    name="recipe"
                     layout='vertical'
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <div className='flex items-start justify-between gap-10'>
-                        <div className='w-1/2'>
-                            <Form.Item name='images' label='Upload Recipe Image/ Video'>
-                                <ImageUpload />
+                        {/* Left side */}
+                        <div className='w-[45%]'>
+                            {/* Images */}
+                            <Form.Item label="Upload Recipe Image">
+                                <ImageUpload
+                                    setImage1File={setImage1File}
+                                    setImage2File={setImage2File}
+                                    setImage3File={setImage3File}
+                                    setImage4File={setImage4File}
+                                    image1File={image1File}
+                                    image2File={image2File}
+                                    image3File={image3File}
+                                    image4File={image4File}
+                                // handleImageDelete={handleImageDelete}
+                                />
                             </Form.Item>
 
-                            <Form.Item name='recipe_name' label='Recipe Name'>
-                                <Input style={{ padding: '8px' }} placeholder='type recipe name...' />
+                            {/* Title */}
+                            <Form.Item
+                                name="title"
+                                label="Recipe Name"
+                                rules={[{ required: true, message: 'Recipe name is required' }]}
+                            >
+                                <Input style={{ padding: '8px' }} placeholder='Type recipe name...' />
                             </Form.Item>
 
-                            <Form.Item name='description' label='Description'>
-                                <TextArea rows={6} placeholder='type here....' />
+                            {/* Description */}
+                            <Form.Item
+                                name="description"
+                                label="Description"
+                                rules={[{ required: true, message: 'Description is required' }]}
+                            >
+                                <TextArea rows={6} placeholder='Type here...' />
                             </Form.Item>
 
-                            <Form.Item name='portionSize' label='Portion Size For'>
-                                <Input style={{ width: '200px', padding: '10px' }} placeholder='type number...' />
+                            {/* Serving */}
+                            <Form.Item
+                                name="serving"
+                                label="Portion Size For"
+                                rules={[{ required: true, message: 'Serving size is required' }]}
+                            >
+                                <Input type="number" style={{ width: '200px', padding: '10px' }} />
                             </Form.Item>
+
                             <hr />
+
                             <div className='mt-5'>
-                                <Form.Item name='cockingMode' label='cocking mode'>
-                                    <Select style={{ width: '100%' }}>
-                                        <Select.Option value="sample">Sample</Select.Option>
+                                {/* Cooking Mode */}
+                                <Form.Item
+                                    name="coocking_mode"
+                                    label="Cooking Mode"
+                                    rules={[{ required: true, message: 'Please select cooking mode' }]}
+                                >
+                                    <Select style={{ width: '100%', height: '40px' }}>
+                                        <Select.Option value="everyday">Everyday</Select.Option>
+                                        <Select.Option value="emergency">Emergency</Select.Option>
+                                        <Select.Option value="meal prep">Meal Prep</Select.Option>
                                     </Select>
                                 </Form.Item>
 
-
-                                <Form.Item name='component' label='component'>
-                                    <Select style={{ width: '100%' }}>
-                                        <Select.Option value="sample">Sample</Select.Option>
+                                {/* Component */}
+                                <Form.Item name='component' label='Component'>
+                                    <Select style={{ width: '100%', height: '40px' }}>
+                                        <Select.Option value="vegtable">Vegtables</Select.Option>
+                                        <Select.Option value="protine">Protine</Select.Option>
+                                        <Select.Option value="base">Base</Select.Option>
+                                        <Select.Option value="connector">Connector</Select.Option>
+                                        <Select.Option value="topping">topping</Select.Option>
                                     </Select>
                                 </Form.Item>
-
-
                             </div>
+
                             <hr />
+
+                            {/* Time */}
                             <div className='flex gap-5 mt-5'>
-                                <Form.Item name='totalTime' label='Total Time'>
-                                    <Input style={{ width: '200px', padding: '8px' }} placeholder='type total time...' />
+                                <Form.Item
+                                    name={['time', 'totalTime']}
+                                    label="Total Time"
+                                    rules={[{ required: true, message: 'Total time is required' }]}
+                                >
+                                    <Input style={{ width: '200px', padding: '8px' }} />
                                 </Form.Item>
 
-                                <Form.Item name='prepTime' label='prep Time'>
-                                    <Input style={{ width: '200px', padding: '8px' }} placeholder='type total time...' />
+                                <Form.Item
+                                    name={['time', 'prepTime']}
+                                    label="Prep Time"
+                                    rules={[{ required: true, message: 'Prep time is required' }]}
+                                >
+                                    <Input style={{ width: '200px', padding: '8px' }} />
                                 </Form.Item>
 
-                                <Form.Item name='coockTime' label='coock Time'>
-                                    <Input style={{ width: '200px', padding: '8px' }} placeholder='type total time...' />
+                                <Form.Item
+                                    name={['time', 'cookTime']}
+                                    label="Cook Time"
+                                    rules={[{ required: true, message: 'Cook time is required' }]}
+                                >
+                                    <Input style={{ width: '200px', padding: '8px' }} />
                                 </Form.Item>
-
                             </div>
                         </div>
 
-                        {/* 2nd layer */}
-                        <div className='w-1/2'>
-                            {/* <Form.Item name='skills' label='skills'>
-                                <TiptapEditor />
-                            </Form.Item> */}
-                            <Form.Item name='skills' label='skills'>
-                                <Input suffix={<FaSearch className='text-zinc-500' />} style={{ padding: '8px' }} placeholder='search skill by Name...' />
-                                <div>
-                                    <Button href='/recipes/kitchen-skill' style={{ backgroundColor: '#1C2D07', color: 'white', width: '170px', marginTop: '15px', borderRadius: '20px' }}><FiPlus /> Create new Skill</Button>
-                                </div>
-                            </Form.Item>
-                            <Form.Item name='instruction' label='Instruction'>
-                                <TiptapEditor />
-                            </Form.Item>
+                        {/* Right side */}
+                        <div className='w-[55%]'>
+                            {/* Skills */}
+                            <SkillComponent form={form} setSkill={setSkill} skills={skills} />
+
+                            {/* Instruction Steps */}
+                            <div className='my-8'>
+                                <p>Instruction Steps</p>
+                                <InstructionSteps steps={steps} setSteps={setSteps} />
+                            </div>
+
                             <hr />
+
+                            {/* Ingredient Field */}
                             <div className='mt-10'>
                                 <p>Ingredient Value</p>
-                                <div className='flex gap-7 mt-2'>
-                                    <Input style={{ padding: '8px' }} placeholder='Ingredient name...' />
-                                    <Input style={{ padding: '8px' }} placeholder='amount...' />
-                                    <Select defaultValue='unit'>
-                                        <Select.Option value="KG">KG</Select.Option>
-                                        <Select.Option value="GM">GM</Select.Option>
-                                    </Select>
-                                </div>
-                                <Button style={{ backgroundColor: '#1C2D07', color: 'white', width: '170px', marginTop: '15px', borderRadius: '20px' }}><FiPlus />Add ingredient</Button>
+                                <IngredientField ingredients={ingredients} setIngredients={setIngredients} />
                             </div>
+
                             <hr className='mt-6' />
 
-
+                            {/* Nutrition Field */}
                             <div className='mt-10'>
-                                <p>Nutration Value</p>
-                                <div className='flex gap-7 mt-2'>
-                                    <Input style={{ padding: '8px' }} placeholder='Nutration name...' />
-                                    <Input style={{ padding: '8px' }} placeholder='amount...' />
-                                    <Select defaultValue='unit'>
-                                        <Select.Option value="KG">KG</Select.Option>
-                                        <Select.Option value="GM">GM</Select.Option>
-                                    </Select>
-                                </div>
-                                <Button style={{ backgroundColor: '#1C2D07', color: 'white', width: '170px', marginTop: '15px', borderRadius: '20px' }}><FiPlus />Add Nutration</Button>
+                                <p>Nutrition Value</p>
+                                <NutritionField nutritions={nutritions} setNutritions={setNutritions} />
                             </div>
 
-
-                            <div className='flex items-start gap-5 mt-10'>
-                                <Form.Item name='allergens' label='Allergens (Include)'>
+                            <div className='flex items-center gap-5 mt-6'>
+                                {/* Allergens */}
+                                <Form.Item
+                                    name="allergens"
+                                    label="Allergens (Include)"
+                                    rules={[{ required: true, message: 'Please add allergens' }]}
+                                >
                                     <Input style={{ width: '350px', padding: '8px' }} />
-                                    <p className='text-gray-400 text-[16px]'>Suggested: Cereals containing
-                                        gluten, Celery, Crustaceans, Eggs, Fish, Peanuts, Soy, Milk (incl. Lactose), Tree Nuts, Mustard, Sesame, Sulphites, Lupins, Molluscs</p>
                                 </Form.Item>
 
-                                <Form.Item name='tags' label='Tags (Maximum 20)'>
+                                {/* Tags */}
+                                <Form.Item
+                                    name="tags"
+                                    label="Tags (Maximum 20)"
+                                    rules={[{ required: true, message: 'Please add at least one tag' }]}
+                                >
                                     <Input style={{ width: '350px', padding: '8px' }} />
-                                    <p className='text-gray-400 text-[16px]'>Suggested: Breakfast, Eggs, 5min recipes, easy_recipes,</p>
                                 </Form.Item>
                             </div>
-
                         </div>
                     </div>
+
                     <hr />
 
+                    {/* Publish Button */}
                     <div className='flex items-end justify-end'>
-                        <Button style={{ marginTop: '20px', backgroundColor: '#1C2D07', color: 'white', width: '350px', padding: '20px' }} type='default'>Publish</Button>
+                        <Button
+                            htmlType="submit"
+                            disabled={isSubmitting}
+                            style={{
+                                marginTop: '20px',
+                                backgroundColor: '#1C2D07',
+                                color: 'white',
+                                width: '350px',
+                                padding: '20px',
+                                opacity: isSubmitting ? 0.6 : 1,
+                                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            {isSubmitting ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    Publishing...
+                                </span>
+                            ) : (
+                                'Publish'
+                            )}
+                        </Button>
                     </div>
                 </Form>
-
             </div>
-
         </section>
     );
 };

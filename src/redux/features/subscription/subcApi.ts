@@ -1,27 +1,52 @@
 import { baseApi } from "@/redux/api/baseApi";
 
 export const subscriptionApi = baseApi.injectEndpoints({
-    endpoints : (builder)=>{
-         return {
-            getSubscription : builder.query({
-                query: ()=>{
+    endpoints: (builder) => {
+        return {
+            getAllSubscription: builder.query({
+                query: () => {
                     return {
-                        url: '/subscription/all-subcription',
+                        url: '/subscription',
                         method: 'GET',
                     }
                 }
             }),
-            purchesSubscription : builder.mutation({
-                query: (payload)=>{
+            getSingleSubscription: builder.query({
+                query: (id) => {
                     return {
-                        url: `user/update-userSubcription-feild/${payload.userId}`,
+                        url: `/subscription/${id}`,
+                        method: 'GET',
+                    }
+                }
+            }),
+            createSubscription: builder.mutation({
+                query: (payload) => {
+                    return {
+                        url: `/subscription`,
+                        method: 'POST',
+                        body: payload
+                    }
+                }
+            }),
+            removeSubscription: builder.mutation({
+                query: (id) => {
+                    return {
+                        url: `/subscription/${id}`,
+                        method: 'DELETE',
+                    }
+                }
+            }),
+           updateSubscription: builder.mutation({
+                query: ({subId, values}) => {
+                    return {
+                        url: `/subscription/${subId}`,
                         method: 'PATCH',
-                        body : payload.data
+                        body : values
                     }
                 }
             })
-         }
+        }
     }
 })
 
-export const {useGetSubscriptionQuery, usePurchesSubscriptionMutation } = subscriptionApi
+export const { useGetAllSubscriptionQuery, useGetSingleSubscriptionQuery, useCreateSubscriptionMutation, useRemoveSubscriptionMutation, useUpdateSubscriptionMutation } = subscriptionApi

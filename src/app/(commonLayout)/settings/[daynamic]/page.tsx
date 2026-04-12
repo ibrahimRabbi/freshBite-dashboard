@@ -1,18 +1,53 @@
+'use client';
+import { useGetSettingDataQuery } from '@/redux/features/settings/settingApi';
 import { Button } from 'antd';
-import React from 'react';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { useParams, useSearchParams } from 'next/navigation';
+import React, { use } from 'react';
 
 const page = () => {
-    return (
-        <section className='mt-20 bg-white rounded-xl h-screen p-20'>
-           <h1 className='text-2xl text-gray-600'>Trams & condition</h1>
-           <p className='text-justify mt-4 text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, qui! Labore sapiente nobis corrupti itaque molestiae porro, consequuntur accusamus nostrum sit voluptatum debitis illo! A repellat ad sed totam error est, expedita veritatis ea animi tempora, deserunt pariatur dolorum enim harum soluta voluptas suscipit porro labore saepe delectus. Enim, sint ab. Repellendus repudiandae et voluptate voluptatibus illum explicabo dignissimos voluptates? Culpa dignissimos laudantium eos fugiat porro dolorem repellendus ab libero dolore perferendis adipisci laborum tenetur magnam soluta officiis placeat enim repudiandae, aperiam minus excepturi. Delectus dolorem ipsum rerum, inventore tempore iure necessitatibus natus sit aperiam aliquam? Eaque, veritatis non quos exercitationem facere, placeat, quam saepe omnis nobis quaerat dignissimos rerum consectetur ex velit. Doloribus omnis a minus ea esse facere velit voluptatum similique blanditiis quibusdam iste possimus, vel sunt laboriosam deserunt debitis, veritatis quasi molestias perspiciatis, iure suscipit obcaecati! Quasi perferendis adipisci alias eaque minima molestias nihil vel consequuntur rem necessitatibus corporis libero numquam, tenetur, repellendus dolor veniam nostrum odit! Fugiat, corrupti ducimus fuga maiores quasi vitae libero porro adipisci mollitia quos. Adipisci exercitationem tempore, est sit unde enim itaque saepe blanditiis accusantium voluptas, dolor illum. Eos laboriosam dolores tempore quos ullam voluptas laborum nesciunt eligendi dicta ducimus iure rerum totam illo commodi iste sequi perspiciatis odit, expedita nobis dolorem omnis veritatis architecto natus aperiam. Debitis omnis fugit, deleniti quisquam inventore iure voluptatibus illum est pariatur nam dolorem dolores ut, eveniet tenetur enim asperiores sequi. Qui explicabo blanditiis laudantium eligendi temporibus minima maiores dolore nobis dolores consequatur porro labore voluptatibus tenetur aperiam perferendis odit alias facere quis consequuntur maxime, molestias esse animi. Provident fugiat nulla incidunt molestias praesentium, excepturi magni iure cumque impedit minus facilis iusto minima consequuntur omnis. Ab suscipit illum possimus eveniet iusto ad consequatur optio, facilis, ipsa repudiandae adipisci veniam! Provident delectus harum veniam ex explicabo facere reiciendis, vitae sed saepe, autem ab doloremque alias accusantium expedita totam minima labore quibusdam voluptatem, quasi voluptates! Maiores, repudiandae? Quibusdam pariatur voluptate maxime, consectetur voluptatibus adipisci tempora officiis odit accusantium doloremque nam voluptas est distinctio quod repellat animi optio voluptates saepe obcaecati aliquid. Atque consequuntur cupiditate quaerat, vero ex in, dicta iste nihil ullam recusandae itaque cumque obcaecati rerum voluptate earum corporis error debitis quae iure provident assumenda eligendi. Ea possimus debitis neque dignissimos voluptate aliquam temporibus ullam libero. Velit veritatis tempore necessitatibus fugiat, perspiciatis tenetur incidunt pariatur, ducimus doloremque odio id culpa et. Praesentium laborum corporis minus. Cum eaque odit non accusantium perspiciatis minus laboriosam. Neque totam numquam velit reiciendis. Voluptates labore excepturi recusandae ad? Non molestias incidunt, sequi, iusto cupiditate enim ex magnam sunt at in adipisci perferendis? Earum fuga tempora quidem accusantium voluptates voluptas, cumque fugiat. Numquam iusto pariatur aperiam rem, aspernatur recusandae et ut minus sunt dolorum id officia, ratione, repudiandae non. Perferendis unde odio soluta voluptatum quo itaque, quae ad veniam quos aliquid hic eaque praesentium quaerat dicta, quidem suscipit voluptatibus minima voluptatem! Odit, dolores. Dolorem odit hic possimus incidunt ea iste cum asperiores debitis commodi delectus beatae, ipsam corrupti libero quos reprehenderit, ipsum quod!</p>
 
-            <Button
-            style={{backgroundColor:'#1C2D07',color:'white',padding:'20px', width:'15%',marginTop:'30px'}}
-           >
-            Edit
+    const { daynamic } = useParams()
+
+    const { data } = useGetSettingDataQuery(daynamic);
+
+
+
+    return (
+        <section className="relative mt-20 px-8">
+      {/* Back arrow + Title */}
+      <div className="flex items-center mb-6">
+        <Link href="/settings" className="flex items-center gap-2 text-gray-600">
+          <ArrowLeft className="w-6 h-6" />
+          <span className="text-3xl font-semibold">{data?.data?.setting_title}</span>
+        </Link>
+      </div>
+
+      {/* White Box */}
+      <div className="bg-white rounded-xl min-h-[500px] px-8 pt-10 relative shadow-md">
+        <div
+          className="text-justify text-zinc-800"
+          dangerouslySetInnerHTML={{ __html: data?.data?.value }}
+        />
+      </div>
+
+      {/* Button outside white box, bottom-right */}
+      <div className="flex justify-end mt-4">
+        <Link href={`/settings/edit?query=${daynamic}`}>
+          <Button
+            style={{
+              backgroundColor: "#1C2D07",
+              color: "white",
+              padding: "20px 25px",
+            }}
+          >
+            Edit {data?.data?.setting_title}
           </Button>
-        </section>
+        </Link>
+      </div>
+    </section>
+
     );
 };
 

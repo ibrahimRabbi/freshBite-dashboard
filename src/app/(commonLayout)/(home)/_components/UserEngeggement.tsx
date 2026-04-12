@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { FC } from "react";
+import { useAppRetentionQuery } from "@/redux/features/recipe/recipeApi";
 
 // ✅ Demo Static Data
 const demoData = [
@@ -49,17 +50,21 @@ const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload }) => {
 };
 
 const UserEngeggement = () => {
+
+
+
   // ✅ Format demoData
   const formattedData = demoData.map((item) => {
     const [monthIndex] = item.label.split("/");
     const monthName = months[parseInt(monthIndex, 10) - 1] || item.label;
-
     return {
       name: monthName,
       total: item.totalUser,
       active: item.Activeusers,
     };
   });
+
+  const { data } = useAppRetentionQuery({})
 
   return (
     <div className="bg-white rounded-xl p-5 shadow-md w-full">

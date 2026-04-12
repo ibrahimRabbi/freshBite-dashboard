@@ -4,7 +4,7 @@ import { getCookie } from "cookies-next/client";
 export const baseApi = createApi({
     reducerPath: "baseApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://ibrahim8000.sobhoy.com/api/v1",
+        baseUrl: "https://server.freshbite.ch/api/v1",
         credentials: "include",
         prepareHeaders: (headers) => {
             const token = getCookie('token');
@@ -12,7 +12,7 @@ export const baseApi = createApi({
             // headers.set("Content-Type", "application/json");
         },
     }),
-    tagTypes: ["auth",'shop'],
+    tagTypes: ["auth",'shop', 'settings'],
     endpoints: (builder) => {
         return {}
     },

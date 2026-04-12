@@ -10,6 +10,9 @@ import resetPass from '../../../assets/auth/rafiki.png';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 // import toast, { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
+import { useResetPasswordMutation } from '@/redux/features/user/userApi';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 
 
@@ -17,19 +20,18 @@ import Image from 'next/image';
 
 const ResetUpdatePassword = () => {
   const [form] = Form.useForm();
+  const [resetPasswordApi, { isLoading }] = useResetPasswordMutation();
+  const userId = useSearchParams().get('userId');
+  const router = useRouter();
+
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-
-//   const location = useLocation();
-//  const queryParams = new URLSearchParams(location.search)
-//  const email = queryParams.get('email')
-
- 
   const handlePasswordVisibility = () => setPasswordVisible(!passwordVisible);
   const handleConfirmPasswordVisibility = () => setConfirmPasswordVisible(!confirmPasswordVisible);
 
-  const validateConfirmPassword = (rule:any, value:any) => {
+  const validateConfirmPassword = (rule: any, value: any) => {
     const { password } = form.getFieldsValue();
     if (value && value !== password) {
       return Promise.reject('Passwords do not match!');
@@ -37,15 +39,28 @@ const ResetUpdatePassword = () => {
     return Promise.resolve();
   };
 
- 
-  
+
+
 
   const resetPassword = async () => {
-   
-//  navigate('/')
-   
-    };
-   
+
+    try {
+      const values = await form.validateFields();
+      const reseting = await resetPasswordApi({ userId, newPassword: values.password }).unwrap();
+      if (reseting?.success === true) {
+        toast.success('Password has been updated successfully!');
+        form.resetFields();
+        router.push('/auth/sign-in');
+      }
+
+
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: 'Failed to update password.',
+      });
+    }
+  };
 
   return (
     <section className="bg-[#f0f0f0] pt-24 h-screen">
@@ -117,7 +132,7 @@ const ResetUpdatePassword = () => {
               />
             </Form.Item>
             <Button
-              // loading={isLoading}
+              loading={isLoading}
               type="primary"
               htmlType="submit"
               className="block w-full h-[48px] rounded-lg mt-2 !text-white !bg-[#1C2D07] !p-4"

@@ -5,56 +5,18 @@ import type { TableColumnsType, TableProps } from 'antd';
 import { CiSearch } from 'react-icons/ci';
 import { BsPlusLg } from 'react-icons/bs';
 import UserModal from '@/components/Ui/UserModal';
-import { useGetAllRecipesQuery } from '@/redux/features/recipe/recipeApi';
+import { useDeleteRecipeMutation, useGetAllRecipesQuery } from '@/redux/features/recipe/recipeApi';
 import Link from 'next/link';
-
-
+import toast from 'react-hot-toast';
 
 interface DataType {
+  _id: string,
   key: React.Key;
   id: string,
   title: string;
   status: string;
   images: [string]
 }
-
-const columns: TableColumnsType<DataType> = [
-  {
-    title: ' Sr.No',
-    render: (_text, _record, index) => <p>{index + 1}</p>,
-  },
-  {
-    title: 'Recipe',
-    dataIndex: 'RecipeName',
-    render: (_, record) => {
-      return (
-        <div className='flex items-center gap-4'>
-          <Avatar style={{ width: '50px', height: '50px' }} className='rounded-full ring-1' src={record?.images[0]} alt='recipe' />
-          <p>{record?.title}</p>
-        </div>
-      )
-    },
-  },
-  {
-    title: 'Serving',
-    dataIndex: 'serving',
-  },
-  {
-    title: 'Actions',
-    dataIndex: 'actions',
-    render: (_, record) => {
-      return (
-        <div className='flex gap-4'>
-          <Button>Edit</Button>
-          <Button style={{ backgroundColor: '#A63005', color: 'white', width: '80px' }} >Delete</Button>
-        </div>
-      )
-    },
-    className: 'text-center',
-  },
-];
-
-
 
 
 const Recipetable: React.FC = () => {
@@ -63,16 +25,64 @@ const Recipetable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('');
   const limit = 10
-  const { data } = useGetAllRecipesQuery({ page: currentPage, limit, search })
+  const { data, refetch } = useGetAllRecipesQuery({ page: currentPage, limit, search })
+  const [deleteRecipe] = useDeleteRecipeMutation()
 
 
+  const deleteRecipeHandler = async (id: any) => {
+    try {
+      const deleting = await deleteRecipe(id).unwrap()
+      if (deleting?.status === 200) {
+        toast.success(deleting?.message)
+        refetch()
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.mwessage)
+    }
+  }
 
+
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: ' Sr.No',
+      render: (_text, _record, index) => <p>{index + 1}</p>,
+    },
+    {
+      title: 'Recipe',
+      dataIndex: 'RecipeName',
+      render: (_, record) => {
+        return (
+          <div className='flex items-center gap-4'>
+            <Avatar style={{ width: '50px', height: '50px' }} className='rounded-full ring-1' src={record?.images[0]} alt='recipe' />
+            <p>{record?.title}</p>
+          </div>
+        )
+      },
+    },
+    {
+      title: 'Serving',
+      dataIndex: 'serving',
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'actions',
+      render: (_, record) => {
+        return (
+          <div className='flex gap-4'>
+            <Link href={`/recipes/edit/${record?._id}`}><Button>Edit</Button></Link>
+            <Button onClick={() => deleteRecipeHandler(record?._id)} style={{ backgroundColor: '#A63005', color: 'white', width: '80px' }} >Delete</Button>
+          </div>
+        )
+      },
+      className: 'text-center',
+    },
+  ];
 
   return (
     <div className='mt-20 w-[90%] mx-auto'>
 
       <div className='flex items-end justify-between'>
-        <h1 className='text-xl font-semibold'>Recipe Management</h1>
+        <h1 className='text-xl font-medium text-gray-700'>Recipe Management</h1>
         <div className='flex items-center gap-4 '>
           <Input onPressEnter={(e) => setSearch((e.target as HTMLInputElement)?.value)} suffix={<CiSearch className='size-5 text-gray-500' />} placeholder='search...' style={{ height: '40px', width: '260px' }} />
           <Link className='cursor-pointer' href='/recipes/create'>

@@ -1,14 +1,35 @@
 'use client'
 import { useVideoUploadMutation } from '@/redux/features/recipe/recipeApi'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { LuFileImage, LuFileVideo } from 'react-icons/lu'
 
-const ImageUpload = ({ setVideoLink, setImageFile }: { setVideoLink: any, setImageFile: any }) => {
+interface ImageAndVideoUploadProps {
+    setVideoLink: any
+    setImageFile: any
+    initialImage?: string
+    initialVideo?: string
+}
+
+const ImageAndVideoUpload = ({ 
+    setVideoLink, 
+    setImageFile, 
+    initialImage, 
+    initialVideo 
+}: ImageAndVideoUploadProps) => {
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [videoPreview, setVideoPreview] = useState<string | null>(null)
     const [uploadVideo, { isLoading }] = useVideoUploadMutation()
 
+    // Set initial previews when component mounts or initial values change
+    useEffect(() => {
+        if (initialImage) {
+            setImagePreview(initialImage)
+        }
+        if (initialVideo) {
+            setVideoPreview(initialVideo)
+        }
+    }, [initialImage, initialVideo])
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -30,7 +51,6 @@ const ImageUpload = ({ setVideoLink, setImageFile }: { setVideoLink: any, setIma
                     setVideoLink(uploading?.url)
                 }
             } catch (err: any) {
-
                 toast.error(err?.data?.message)
             }
         }
@@ -106,4 +126,4 @@ const ImageUpload = ({ setVideoLink, setImageFile }: { setVideoLink: any, setIma
     )
 }
 
-export default ImageUpload
+export default ImageAndVideoUpload

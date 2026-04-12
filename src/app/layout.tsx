@@ -24,16 +24,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   <Wrapper>
-     <html lang="en">
-      
+    <Wrapper>
+      <html lang="en">
         <body >
-      {children}
-      </body>
-      
-    </html>
-    <Toaster/>
-   </Wrapper>
+          {children}
+        </body>
+        <Toaster />
+
+      </html>
+    </Wrapper>
   );
 }
 

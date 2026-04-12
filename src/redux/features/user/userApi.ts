@@ -23,6 +23,17 @@ const userApi = baseApi.injectEndpoints({
                 providesTags: ['auth']
             }),
 
+            updateProfile: builder.mutation({
+                query: (payload) => {
+                    return {
+                        url: `/auth/update-profile`,
+                        method: 'PATCH',
+                        body: payload
+                    }
+                },
+                invalidatesTags: ['auth']
+            }),
+
             getAllUser: builder.query({
                 query: (query) => {
                     return {
@@ -47,10 +58,10 @@ const userApi = baseApi.injectEndpoints({
                 invalidatesTags: ['auth']
             }),
 
-            sendOtp: builder.mutation({
+            forgetPassword: builder.mutation({
                 query: (payload) => {
                     return {
-                        url: '/otp/send-otp',
+                        url: '/auth/forget-password',
                         method: 'POST',
                         body: payload
                     }
@@ -61,7 +72,7 @@ const userApi = baseApi.injectEndpoints({
             verifyOtp: builder.mutation({
                 query: (payload) => {
                     return {
-                        url: `/otp/verify-otp`,
+                        url: `/auth/verify-otp`,
                         method: 'POST',
                         body: payload
                     }
@@ -72,13 +83,26 @@ const userApi = baseApi.injectEndpoints({
             resetPassword: builder.mutation({
                 query: (payload) => {
                     return {
-                        url: `/auth/reset-password?email=${payload?.email}`,
+                        url: `/auth/reset-password`,
                         method: 'PATCH',
-                        body: payload?.data
+                        body: payload
                     }
                 },
                 invalidatesTags: ['auth']
             }),
+
+            changePassword: builder.mutation({
+                query: (payload) => {
+                    return {
+                        url: `/auth/change-password`,
+                        method: 'PATCH',
+                        body: payload
+                    }
+                },
+                invalidatesTags: ['auth']
+            }),
+
+
             removeUser: builder.mutation({
                 query: (id) => {
                     return {
@@ -89,8 +113,18 @@ const userApi = baseApi.injectEndpoints({
                 invalidatesTags: ['auth']
             }),
 
+            singleImageUpload: builder.mutation({
+                query: (payload) => {
+                    return {
+                        url: `/recipe/single-upload`,
+                        method: 'POST',
+                        body: payload
+                    }
+                },
+            }),
+
         }
     }
 })
 
-export const { useGetSingleUserQuery, useGetMyProfileQuery, useGetAllUserQuery, useSignInMutation, useSendOtpMutation, useVerifyOtpMutation, useResetPasswordMutation, useRemoveUserMutation } = userApi
+export const { useGetSingleUserQuery, useGetMyProfileQuery, useGetAllUserQuery, useSignInMutation, useForgetPasswordMutation, useVerifyOtpMutation, useResetPasswordMutation, useChangePasswordMutation, useRemoveUserMutation, useUpdateProfileMutation, useSingleImageUploadMutation } = userApi

@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const router = useRouter();
-  const [signIn] = useSignInMutation();
+  const [signIn, { isLoading }] = useSignInMutation();
 
   const onFinish = async (values: any) => {
     try {
@@ -22,6 +22,7 @@ const Login = () => {
       if (res?.status === 200) {
         toast.success(res?.message);
         setCookie("token", res?.token);
+         
         router.push("/");
       }
     } catch (err: any) {
@@ -104,14 +105,7 @@ const Login = () => {
                 <Form.Item
                   name="remember"
                   valuePropName="checked"
-                  rules={[
-                    {
-                      validator: (_, value) =>
-                        value
-                          ? Promise.resolve()
-                          : Promise.reject("Please check remember me"),
-                    },
-                  ]}
+                  
                 >
                   <Checkbox className="text-black">
                     Remember me
@@ -129,6 +123,7 @@ const Login = () => {
               <Form.Item>
                 <Button
                   htmlType="submit"
+                  loading={isLoading}
                   style={{
                     backgroundColor: "#1C2D07",
                     color: "white",

@@ -9,8 +9,8 @@ import { Pagination } from 'antd';
 const page = () => {
 
   const [currentPage, setCurrentPage] = useState(1)
-    const limit = 4
-    const { data, isLoading } = useGetAllUserQuery({page:currentPage,limit})
+    const limit = 10
+    const { data, refetch, isLoading } = useGetAllUserQuery({page:currentPage,limit})
 
 
   return (
@@ -20,7 +20,7 @@ const page = () => {
       <div className='mt-12'>
         <div className='w-full'><UserEngeggement /></div>
         <div className='w-full mt-12'>
-          <UserTableComponent data={data} />
+          <UserTableComponent refetch={refetch} data={data} />
           <div className='flex justify-center mt-12'>
             <Pagination pageSize={limit} current={currentPage} onChange={(page) => setCurrentPage(page)} total={data?.meta?.totalDocument || 0} />
           </div>

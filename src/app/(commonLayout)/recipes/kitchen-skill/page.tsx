@@ -21,9 +21,6 @@ interface DataType {
 
 
 
-
-
-
 const SkillTable: React.FC = () => {
 
     const [isOpen, setOpen] = useState(false)
@@ -81,7 +78,7 @@ const SkillTable: React.FC = () => {
         render: (_, record) => {
             return (
                 <div className='flex gap-4'>
-                    <Button>Edit</Button>
+                    <Link href={`/recipes/kitchen-skill/edit/${record?._id}`}> <Button>Edit</Button></Link>
                     <Button onClick={()=>deleteHandler(record?._id)} style={{ backgroundColor: '#A63005', color: 'white', width: '80px' }} >Delete</Button>
                 </div>
             )
@@ -94,7 +91,7 @@ const SkillTable: React.FC = () => {
         <div className='mt-20 w-[90%] mx-auto'>
 
             <div className='flex items-end justify-between'>
-                <h1 className='text-xl font-semibold'>Kitchen Skill Management</h1>
+                <h1 className='text-xl font-medium text-gray-700'>Skill Management</h1>
                 <div className='flex items-center gap-4 '>
                     <Input onPressEnter={(e) => setSearch((e.target as HTMLInputElement)?.value)} suffix={<CiSearch className='size-5 text-gray-500' />} placeholder='search...' style={{ height: '40px', width: '260px' }} />
                     <Link className='cursor-pointer' href='/recipes/kitchen-skill/add-skill'>
