@@ -210,6 +210,9 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <div className="mt-2 h-0.5 w-12 rounded" style={{ background: "#52b788" }} />
+          <p className="mt-3 text-sm" style={{ color: "#5a5a5a" }}>
+            Effective date: 12 April 2026
+          </p>
         </div>
 
         <DocTab clauses={privacyContent} />
