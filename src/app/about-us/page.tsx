@@ -1,6 +1,11 @@
 "use client";
 
 /* ── DATA ── */
+const brand = {
+  first: "fresh",
+  second: "Bite",
+};
+
 const aboutContent = {
   headline: "Making healthy cooking part of everyday life.",
   paragraphs: [
@@ -44,12 +49,14 @@ function AboutTab() {
         >
           Our Story
         </p>
+
         <h2
           className="text-2xl md:text-3xl font-bold leading-tight mb-6 max-w-xl"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           {aboutContent.headline}
         </h2>
+
         <div className="space-y-3 max-w-2xl">
           {aboutContent.paragraphs.map((p, i) => (
             <p key={i} className="text-sm leading-relaxed" style={{ color: "#c8e6d4" }}>
@@ -69,8 +76,12 @@ function AboutTab() {
           >
             <span className="text-2xl">{p.icon}</span>
             <div>
-              <p className="font-semibold text-sm mb-0.5" style={{ color: "#1a1a1a" }}>{p.label}</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#5a5a5a" }}>{p.desc}</p>
+              <p className="font-semibold text-sm mb-0.5" style={{ color: "#1a1a1a" }}>
+                {p.label}
+              </p>
+              <p className="text-xs leading-relaxed" style={{ color: "#5a5a5a" }}>
+                {p.desc}
+              </p>
             </div>
           </div>
         ))}
@@ -99,8 +110,10 @@ function AboutTab() {
 /* ── MAIN COMPONENT ── */
 export default function AboutUs() {
   return (
-    <div className="min-h-screen" style={{ background: "#faf7f2", fontFamily: "'Source Serif 4', Georgia, serif" }}>
-
+    <div
+      className="min-h-screen"
+      style={{ background: "#faf7f2", fontFamily: "'Source Serif 4', Georgia, serif" }}
+    >
       {/* ── HEADER ── */}
       <header
         className="relative overflow-hidden text-white text-center px-6 py-14"
@@ -118,8 +131,10 @@ export default function AboutUs() {
           className="relative text-4xl font-bold tracking-wide"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          fresh<span style={{ color: "#52b788" }}>BITE</span>
+          {brand.first}
+          <span style={{ color: "#52b788" }}>{brand.second}</span>
         </div>
+
         <p
           className="relative mt-2 text-xs uppercase tracking-[0.18em] font-light"
           style={{ color: "#95d5b2" }}
@@ -130,7 +145,6 @@ export default function AboutUs() {
 
       {/* ── CONTENT ── */}
       <main className="max-w-3xl mx-auto px-5 py-10 pb-20">
-        {/* Section heading */}
         <div className="mb-8">
           <h1
             className="text-2xl font-bold"
@@ -149,9 +163,16 @@ export default function AboutUs() {
         className="text-center py-7 px-4 text-xs tracking-wide"
         style={{ background: "#2d6a4f", color: "#95d5b2" }}
       >
-        <p>freshBITE Ivanov &nbsp;·&nbsp; Zurlindenstrasse 303, 8003 Zurich, Switzerland</p>
+        <p>
+          {brand.first}
+          {brand.second} Ivanov · Zurlindenstrasse 303, 8003 Zurich, Switzerland
+        </p>
         <p className="mt-1">
-          <a href="mailto:info@freshbite.ch" className="underline underline-offset-2" style={{ color: "#52b788" }}>
+          <a
+            href="mailto:info@freshbite.ch"
+            className="underline underline-offset-2"
+            style={{ color: "#52b788" }}
+          >
             info@freshbite.ch
           </a>
         </p>

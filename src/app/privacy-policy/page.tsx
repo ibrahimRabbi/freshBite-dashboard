@@ -189,7 +189,7 @@ export default function PrivacyPolicy() {
           className="relative text-4xl font-bold tracking-wide"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          fresh<span style={{ color: "#52b788" }}>BITE</span>
+          fresh<span style={{ color: "#52b788" }}>Bite</span>
         </div>
         <p
           className="relative mt-2 text-xs uppercase tracking-[0.18em] font-light"

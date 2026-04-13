@@ -14,8 +14,8 @@ import { Toaster } from "react-hot-toast";
 // });
 
 export const metadata: Metadata = {
-  title: "Fresh bite - Admin Dashboard",
-  description: "build by ibrahim rabbi",
+  title: "Fresh bite",
+  description: "meal planning system for a healthier lifestyle",
   icons : {
     icon: "/favicon.svg",
   }

@@ -142,7 +142,7 @@ export default function DeleteAccount() {
           style={{ background: "radial-gradient(ellipse at 70% 30%, rgba(255,138,128,0.2) 0%, transparent 65%)" }}
         />
         <div className="relative text-4xl font-bold tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
-          fresh<span style={{ color: "#ff8a80" }}>BITE</span>
+          fresh<span style={{ color: "#ff8a80" }}>Bite</span>
         </div>
         <p className="relative mt-2 text-xs uppercase tracking-[0.18em] font-light" style={{ color: "#ffcdd2" }}>
           Delete Account
